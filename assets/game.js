@@ -1,3 +1,4 @@
+
 // function to generate random numeric value
 var randomNumber = function (min, max) {
   var value = Math.floor(Math.random() * (max-min +1) + min);
@@ -31,42 +32,93 @@ var fightOrSkip = function() {
   }
 return false; }
 
+
+// if it is the player-robot's turn:
+// Prompt the fight or skip request
+// Remove damage from enemy-robot's health
+// Check if the enemy-robot has enough health to continue fighting
+
+// If it is not the player-robot's turn:
+// Remove damage from the player-robot's health
+// Check if the player-robot has enough health to continue fighting
+
+// After the turn is done, switch turns for the next bout of fighting:
+// If the player-robot went first, run the logic for the enemy-robot attacking the player-robot
+// If the enemy-robot went first, run the logic for the player-robot attacking the enemy-robot
+
+
 var fight = function(enemy) {
+  // keep trackof who goes first
+  var isPlayerTurn = true;
+
+  // randomly change turn order 
+  if (Math.random() > .5) {
+      isPlayerTurn = false;
+  }
+
   while (playerInfo.health > 0 && enemy.health > 0) {
+    if (isPlayerTurn) {
     // ask player if they'd like to fight or skip using fightOrSkip function
-    if (fightOrSkip()) {
-      // if true, leave fight by breaking loop
-      break;
+      if (fightOrSkip()) {
+         // if true, leave fight by breaking loop
+         break;
     }
-  // generate random damage value based on player's attack power
-  var damage = randomNumber(playerInfo.attack - 3, playerInfo.attack)
-  enemy.health= Math.max(0, enemy.health- damage);
-  console.log(
-  playerInfo.name + " attacked " + enemy.name + ". " + enemy.name + " now has " + enemy.health+ " health remaining."
+    // generate random damage value based on player's attack power
+    var damage = randomNumber(playerInfo.attack - 3, playerInfo.attack)
+    
+    // // remove enemy's health by subtracting the amount we set in the damage variable
+    enemy.health= Math.max(0, enemy.health- damage);
+    console.log(
+      playerInfo.name +
+      " attacked " +
+      enemy.name +
+      ". " +
+      enemy.name +
+      " now has " +
+      enemy.health +
+      " health remaining."
   );
 
   // check enemy's health
   if (enemy.health<= 0) {
-  window.alert(enemy.name + " has died!");
-  break;
+    window.alert(enemy.name + " has died!");
+
+    // award player money for winning 
+    playerInfo.money = playerInfo.money + 20;
+
+    // leave while loop since enemy is dead
+    break;
   } else {
-  window.alert(enemy.name + " still has " + enemy.health+ " health left.");
+    window.alert(enemy.name + " still has " + enemy.health+ " health left.");
   }  
+  // player gets attacked first
+} else {
+  var damage = randomNumber(enemy.attack - 3, enemy.attack);
 
   // remove player's health by subtracting the amount set in the enemy.attack variable
-  var damage = randomNumber(enemy.attack - 3, enemy.attack);
   playerInfo.health = Math.max(0, playerInfo.health - damage);
-   console.log(
-  enemy.name + " attacked " + playerInfo.name + ". " + playerInfo.name + " now has " + playerInfo.health + " health remaining."
+  console.log(
+    enemy.name +
+    " attacked " +
+    playerInfo.name +
+    ". " +
+    playerInfo.name +
+    " now has " +
+    playerInfo.health +
+    " health remaining."
   );
   
   // check player's health
   if (playerInfo.health <= 0) {
-  window.alert(playerInfo.name + " has died!");
-  break;
+    window.alert(playerInfo.name + " has died!");
+    // leave while() loop if player is dead
+    break;
   } else {
-  window.alert(playerInfo.name + " still has " + playerInfo.health + " health left.");
+    window.alert(playerInfo.name + " still has " + playerInfo.health + " health left.");
   }
+ }
+ //switch turn order for next round
+ isPlayerTurn = !isPlayerTurn;  
  }
 };
 
@@ -212,3 +264,5 @@ startGame();
 //    * Fight all enemy-robots
 //    * Defeat each enemy-robot
 // "LOSE" - Player robot's health is zero or less
+
+
